@@ -1,0 +1,84 @@
+2.1
+
+For all 3 of the programs (rgb_2_greyscale, set_pixels, and simple_sat), the main target for parallelization is their
+computation heavy functionalities. For rgb_2_greyscale it's the pixel conversion and writing, as well as for set_pixels,
+whereas for simple_sat it's the evaluation of the boolean state of the given boolean formula. The reasons these are
+good targets to introduce parallelism through threading is they have few external dependencies. They are linear
+operations that are not altered by external unknown factors. So it's possible to speed them up without possible problems.
+
+2.2
+
+* rgb_2_greyscale
+
+for (i=0; i<N; i++)
+    create and run in parallel calc_grayscale(i, pixels, width, from, to);
+for (i=0; i<N; i++)
+    wait calc_grayscale(i, pixels, width, from, to) to finish;
+Task(i, pixels, width, from, to)
+{
+    pixels = f(pixels, width, from, to);
+
+    f(pixels, width, from, to)
+    {
+        return calc_grayscale(pixels, width, from, to)
+    }
+}
+
+* set_pixels
+
+for (i=0; i<N; i++)
+    create and run in parallel Task(i, pixels, width, from, to);
+for (i=0; i<N; i++)
+    wait Task(i, pixels, width, from, to) to finish;
+Task(i, pixels, width, from, to)
+{
+    pixels = f(pixels, width, from, to);
+
+    f(pixels, width, from, to)
+    {
+        return set_pixels(pixels, width, from, to)
+    }
+}
+
+* simple_sat
+
+for (i=0; i<N; i++)
+    create and run in parallel Task(i, from, to);
+for (i=0; i<N; i++)
+    wait Task(i, from, to) to finish;
+Task(i, from, to)
+{
+    value = f(from, to);
+
+    f(from, to)
+    {
+        return thread_wrapper(from, to)
+    }
+}
+
+2.3
+
+To answer this, let's get the times before we develop the threaded versions
+
+* rgb_2_greyscale: 1.486 seconds
+* set_pixels: 1.567 seconds
+* simple_sat: 38.864 seconds
+
+For the first 2, I predict the time will go down to the 300-200 ms. For simple_sat, I believe the reason it takes this much
+is because of the big amounts of prints that are executed due to not dynamically creating a string in c to print. I expect
+a 50% drop in around 20 seconds.
+
+2.4
+
+See the code at directory ex2/
+
+2.5
+
+Below are the times for the threaded versions
+
+* rgb_2_greyscale: 0.076 seconds
+* set_pixels: 0.055 seconds
+* simple_sat: 11.252 seconds
+
+In all programs, the threaded version expected my estimated times. I believe the reasons for this is not taking into account
+the extremely fast speed that C as a language offers.
