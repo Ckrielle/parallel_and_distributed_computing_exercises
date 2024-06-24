@@ -4,4 +4,4 @@ Literally what the name says, uni had a course on threading, and I solved it's w
 
 It's kinda cringe to upload typical uni exercises (and not for example a good standalone uni project), but I choose to be a little cringe, never hurt anybody. And I hope that it can help other people in one way or another.
 
-Number 7 is missing, that's cause I never did it.
+Number 7 is missing, that's cause I never did it. Also some of them might not necessarily be 100% correct. But all compile and run just fine
